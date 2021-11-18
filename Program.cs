@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace DoAppsTest.Api
+namespace DoAppsTest
 {
     public class Program
     {

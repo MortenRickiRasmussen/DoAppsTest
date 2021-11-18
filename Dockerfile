@@ -8,20 +8,15 @@ RUN apk update \
 
 # Cache config, csproj and sln
 #COPY ./NuGet.config ./
-COPY ./*/*.csproj ./
-COPY ./*.sln ./
+COPY *.csproj ./
 
 # Restore packages
-RUN for f in *.csproj; do mkdir ${f%.csproj} && mv $f ${f%.csproj}/$f; done
+RUN dotnet restore
 
 # Copy everything else and build
 COPY . ./
 
-RUN dotnet build -c Release --force
-
-ARG PROJECT
-
-RUN dotnet publish $PROJECT -c Release --no-build -o /output
+RUN dotnet publish -c Release -o /output
 
 # Build runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:5.0-alpine as runtime
@@ -40,9 +35,7 @@ ENV ASPNETCORE_URLS=http://*:3000
 # Copy build output to container
 COPY --from=build /output .
 
-ARG PROJECT
-
-ENV RUNPATH=$PROJECT.dll
+ENV RUNPATH=DoAppsTest.dll
 
 # Set user to nobody
 RUN chown nobody:nogroup -R .
